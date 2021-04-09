@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+	.collapsible {
+	  background-color: white;
+	  color: black;
+	  cursor: pointer;
+	  width: 20%;
+	  border: none;
+	  text-align: left;
+	  outline: none;
+	}
+	
+	.active, .collapsible:hover {
+	  background-color: white;
+	}
+	
+	.content {
+	  padding: 0 18px;
+	  display: none;
+	  overflow: hidden;
+	  background-color: white;
+	}
+	</style>
+</head>
+<body>
+<script>
+var module = {}
+module.__exports = {}
+module.export = function(name, obj) {
+	if (module.__exports[name] != null) {
+		throw "export already exists::"+name
+	}
+	module.__exports[name] = obj
+}
+module.require = function(name) {
+	if (module.__exports[name] == null) {
+		throw "require cannot find::"+name
+	}
+	return module.__exports[name]
+}
+</script>
+<script src="curves.js"></script>
+<script src="slidercalc.js"></script>
+<script src="osuparser.js"></script>
+<script src="format.js"></script>
+<script src="osu_to_lua.js"></script>
+
+<script src="jquery.js"></script>
+<script>
+$(function(){
+  $("#submit").click(function(){
+    $("#out").val("converting...")
+			var osu_file_str = $("#in").val()
+			var options = {
+				"bpm":$("#bpm").val(),
+				"player2":$("#player2").val(),
+				"player1":$("#player1").val(),
+				"speed":$("#speed").val(),
+				"needsvoices":document.getElementById("needsvoices").checked,
+				"song":$("#song").val(),
+				"onlyp1":document.getElementById("onlyp1").checked
+			};
+			$("#out").val(module.require("osu_to_lua")(osu_file_str, options))
+  })
+})
+</script>
+<button type="button" class="collapsible active" value="Credits: "><h2>Credits: ∧</h2></button>
+<div class="content" style="display: block;">
+	RobeatsWebConvert2 by spotco - <a href="https://github.com/spotco/RobeatsWebConvert2">Source</a><br/>
+	osu to FNF web by woodyloody (me) - <a href="https://github.com/woodyloody/osu-to-FNF-web">Source</a><br/>
+</div>
+<br/>
+<button type="button" class="collapsible" value="Instructions: "><h2>Instructions: ∨</h2></button>
+<div class="content">
+  <p>This tool can used to map FNF songs easier in osu or can be used to just import a song from osu.<br/>
+	  Mapping a song in osu:<br/>
+	  1. Open the song and setup in 8K<br/>
+	  2. Map the right side as player1 and map the left side as player2 with 4 keys for each player<br/>
+	  3. After mapping the song save and open the .osu beatmap located in the osu!\Songs folder<br/>
+	  4. Copy and paste the contents of the .osu beatmap into the converter<br/>
+	  5. Adjust any options you need to change and convert<br/>
+	  6. Copy the result into the JSON file in FNF which is located in assets\preload\data\(song name)<br/>
+	  7. Test the map in FNF<br/>
+	  If the map is not working make sure you added the correct song name in options which is the same as the folder in assets\songs<br/>
+	  Extra info:<br/>
+	  - The converter can take 4K maps but turn on the only player1 option for it to be mapped the same
+  </p>
+</div>
+<br/>
+<button type="button" class="collapsible active" value="Options: "><h2>Options: ∧</h2></button>
+<div class="content" style="display: block;">
+	Song: <input id="song" type="text" placeholder="Song name"> - The name of the song folder in assets (Defaults to song name in osu file or "songName" if none)<br/>
+	Player1: <input id="player1" type="text" placeholder="Player1"> - Player1's name (Defaults to "bf")<br/>
+	Player2: <input id="player2" type="text" placeholder="Player2"> - Player2's name (Defaults to "dad")<br/>
+	BPM: <input id="bpm" type="text" placeholder="BPM"> - BPM of the song (Defaults to max bpm in osu file or 120 if none)<br/>
+	Speed: <input id="speed" type="text" placeholder="Speed"> - Note approach speed (Defaults to 1)<br/>
+	Needs voices: <input id="needsvoices" type="checkbox" placeholder="needsvoices"> - Does the song have a second file for voices (Defaults to false)<br/>
+	Only player1: <input id="onlyp1" type="checkbox" placeholder="onlyp1"> - All notes on player1's side (Defaults to false)<br/>
+</div>
+<br/>
+<button type="button" class="collapsible active" value="Converter: "><h2>Converter: ∧</h2></button>
+<div class="content" style="display: block;">
+	<textarea id="in" style="width:1000px;height:200px" placeholder="paste contents of osu file here"></textarea>
+	<br/>
+	<button id="submit">CONVERT</button>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<textarea id="out" style="width:1000px;height:200px" readonly>output (paste this into the JSON file with the correct name)</textarea>
+</div>
+
+
+<script>
+	var coll = document.getElementsByClassName("collapsible");
+	var i;
+	
+	for (i = 0; i < coll.length; i++) {
+	  coll[i].addEventListener("click", function() {
+		this.classList.toggle("active");
+		var content = this.nextElementSibling;
+		if (content.style.display === "block") {
+		  content.style.display = "none";
+		  this.children[0].innerHTML = this.value + "∨"
+		} else {
+		  content.style.display = "block";
+		  this.children[0].innerHTML = this.value + "∧"
+		}
+	  });
+	}
+</script>
+</body>
+</html>
